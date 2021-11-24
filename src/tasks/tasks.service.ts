@@ -43,15 +43,19 @@ export class TasksService {
   getTaskById(getTaskDto: GetTaskDto): Task {
     const { id } = getTaskDto;
     const task = this.tasks.find((item) => item.id === id);
+    if (!task) {
+      throw new NotFoundException(`getTaskById with id: ${id} not found`);
+    }
     return task;
   }
 
   deleteTaskById(deleteTaskDto: DeleteTaskDto): void {
     const { id } = deleteTaskDto;
     const index = this.tasks.findIndex((item) => item.id === id);
-    if (index >= 0) {
-      this.tasks.splice(index, 1);
+    if (index < 0) {
+      throw new NotFoundException(`deleteTaskById with id: ${id} not found`);
     }
+    this.tasks.splice(index, 1);
   }
 
   updateTaskStatusById(updateTaskDto: UpdateTaskDto): Task {
